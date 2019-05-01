@@ -39,8 +39,7 @@ func TestNewDefaultConfig(t *testing.T) {
 		})
 
 		t.Run("should fail for empty config", func(t *testing.T) {
-			v := viper.New()
-			con, err := NewConnection(nil, l, v)
+			con, err := NewConnection(nil, l)
 			require.Nil(t, con)
 			require.EqualError(t, err, ErrEmptyConfig.Error())
 		})
@@ -54,7 +53,7 @@ func TestNewDefaultConfig(t *testing.T) {
 			require.NoError(t, err)
 			require.Equal(t, hostname, cfg.Hostname)
 
-			cli, err := NewConnection(cfg, nil, v)
+			cli, err := NewConnection(cfg, nil)
 			require.Nil(t, cli)
 			require.EqualError(t, err, ErrEmptyLogger.Error())
 		})
@@ -68,7 +67,7 @@ func TestNewDefaultConfig(t *testing.T) {
 			cfg, err := NewDefaultConfig(v)
 			require.NoError(t, err)
 
-			cli, err := NewConnection(cfg, l, v)
+			cli, err := NewConnection(cfg, l)
 			require.Error(t, err)
 			require.Nil(t, cli)
 		})
@@ -86,7 +85,7 @@ func TestNewDefaultConfig(t *testing.T) {
 			require.Equal(t, "postgres", cfg.Password)
 			require.Equal(t, "postgres", cfg.Database)
 
-			cli, err := NewConnection(cfg, l, v)
+			cli, err := NewConnection(cfg, l)
 			require.NoError(t, err)
 			require.NotNil(t, cli)
 
@@ -125,7 +124,7 @@ func TestNewDefaultConfig(t *testing.T) {
 				require.Equal(t, "postgres", cfg.Password)
 				require.Equal(t, "postgres", cfg.Database)
 
-				_, _ = NewConnection(cfg, l, v)
+				_, _ = NewConnection(cfg, l)
 			}
 		})
 
@@ -150,7 +149,7 @@ func TestNewDefaultConfig(t *testing.T) {
 			require.Equal(t, "postgres", cfg.Password)
 			require.Equal(t, "postgres", cfg.Database)
 
-			cli, err := NewConnection(cfg, l, v)
+			cli, err := NewConnection(cfg, l)
 			require.Nil(t, cli)
 			require.Error(t, err)
 
@@ -174,7 +173,7 @@ func TestNewDefaultConfig(t *testing.T) {
 			require.Equal(t, "postgres", cfg.Password)
 			require.Equal(t, "postgres", cfg.Database)
 
-			cli, err := NewConnection(cfg, l, v)
+			cli, err := NewConnection(cfg, l)
 			require.Nil(t, cli)
 			require.Error(t, err)
 		})
@@ -225,7 +224,7 @@ func TestNewDefaultConfig(t *testing.T) {
 			for _, mode := range modes {
 				require.NoError(t, file.Chmod(mode))
 
-				cli, err := NewConnection(cfg, l, v)
+				cli, err := NewConnection(cfg, l)
 				require.Nil(t, cli)
 				require.Error(t, err)
 			}
@@ -247,7 +246,7 @@ func TestNewDefaultConfig(t *testing.T) {
 			require.Equal(t, "postgres", cfg.Password)
 			require.Equal(t, "postgres", cfg.Database)
 
-			cli, err := NewConnection(cfg, l, v)
+			cli, err := NewConnection(cfg, l)
 			require.NoError(t, err)
 			require.NotNil(t, cli)
 

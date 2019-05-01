@@ -13,16 +13,22 @@ Configuration:
 - yaml example
 ```yaml
 posgres:
-    address: string
+    hostname: string
     username: string
     password: string
     database: string
     debug: bool
     pool_size: int
+    options: # optional
+      host: string
+      sslkey: string
+      sslmode: string
+      sslcert: string
+      sslrootcert: string
 ```
 - env example
 ```
-POSTGRES_ADDRESS=string
+POSTGRES_HOSTNAME=string
 POSTGRES_USERNAME=string
 POSTGRES_PASSWORD=string
 POSTGRES_DATABASE=string

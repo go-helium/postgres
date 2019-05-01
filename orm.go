@@ -109,7 +109,7 @@ func NewDefaultConfig(v *viper.Viper) (*Config, error) {
 }
 
 // NewConnection returns database connection
-func NewConnection(cfg *Config, l *zap.Logger, v *viper.Viper) (db *pg.DB, err error) {
+func NewConnection(cfg *Config, l *zap.Logger) (db *pg.DB, err error) {
 	if cfg == nil {
 		err = ErrEmptyConfig
 		return
