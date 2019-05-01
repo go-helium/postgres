@@ -97,23 +97,36 @@ func TestNewDefaultConfig(t *testing.T) {
 			require.NoError(t, err)
 		})
 
-		t.Run("should not connect on server without ssl", func(t *testing.T) {
+		t.Run("should verify all ssl-modes", func(t *testing.T) {
 			v := viper.New()
 			v.SetDefault("postgres.debug", true)
 			v.SetDefault("postgres.username", "postgres")
 			v.SetDefault("postgres.password", "postgres")
 			v.SetDefault("postgres.database", "postgres")
-			v.Set("postgres.options.sslmode", "verify-full")
 
-			cfg, err := NewDefaultConfig(v)
-			require.NoError(t, err)
-			require.Equal(t, "postgres", cfg.Username)
-			require.Equal(t, "postgres", cfg.Password)
-			require.Equal(t, "postgres", cfg.Database)
+			modes := []string{
+				"disable",
+				"require",
+				"unknown",
+				"verify-ca",
+				"verify-full",
+			}
 
-			cli, err := NewConnection(cfg, l, v)
-			require.Nil(t, cli)
-			require.EqualError(t, err, "can't connect to postgres: pg: SSL is not enabled on the server")
+			for _, mode := range modes {
+				if mode == "require" {
+					v.Set("postgres.options.sslrootcert", mode)
+				}
+
+				v.Set("postgres.options.sslmode", mode)
+
+				cfg, err := NewDefaultConfig(v)
+				require.NoError(t, err)
+				require.Equal(t, "postgres", cfg.Username)
+				require.Equal(t, "postgres", cfg.Password)
+				require.Equal(t, "postgres", cfg.Database)
+
+				_, _ = NewConnection(cfg, l, v)
+			}
 		})
 
 		t.Run("should not fail on couldn't parse pem in sslrootcert", func(t *testing.T) {
