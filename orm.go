@@ -19,7 +19,6 @@ type (
 		Database string
 		Debug    bool
 		PoolSize int
-		Logger   *zap.Logger
 		Options  map[string]string
 	}
 
@@ -154,7 +153,8 @@ func NewConnection(cfg *Config, l *zap.Logger) (db *pg.DB, err error) {
 				zap.Duration("query_time", time.Since(h.StartAt)),
 				zap.Int("attempt", e.Attempt),
 				zap.Any("params", e.Params),
-				zap.Error(qErr))
+				zap.NamedError("format_error", qErr),
+				zap.Error(e.Error))
 		}
 		db.AddQueryHook(h)
 	}
