@@ -1,6 +1,7 @@
 package postgres
 
 import (
+	"context"
 	"crypto/ecdsa"
 	"crypto/elliptic"
 	"crypto/rand"
@@ -11,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/v9"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 	"go.uber.org/zap"
@@ -251,7 +252,7 @@ func TestNewDefaultConfig(t *testing.T) {
 			require.NotNil(t, cli)
 
 			cli.AddQueryHook(&Hook{
-				Before: func(event *pg.QueryEvent) {},
+				Before: func(ctx context.Context, e *pg.QueryEvent) (context.Context, error) { return ctx, e.Err },
 				After:  nil,
 			})
 

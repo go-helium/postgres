@@ -4,6 +4,7 @@
 [![Build Status](https://travis-ci.com/go-helium/redis.svg?branch=master)](https://travis-ci.com/go-helium/redis)
 [![Report](https://goreportcard.com/badge/github.com/go-helium/postgres)](https://goreportcard.com/report/github.com/go-helium/postgres)
 [![GitHub release](https://img.shields.io/github/release/go-helium/postgres.svg)](https://github.com/go-helium/postgres)
+[![Sourcegraph](https://sourcegraph.com/github.com/go-helium/postgres/-/badge.svg)](https://sourcegraph.com/github.com/go-helium/postgres?badge)
 ![GitHub](https://img.shields.io/github/license/go-helium/postgres.svg?style=popout)
 
 Module provides you connection to PostgreSQL server
@@ -34,4 +35,9 @@ POSTGRES_PASSWORD=string
 POSTGRES_DATABASE=string
 POSTGRES_DEBUG=bool
 POSTGRES_POOL_SIZE=int
+POSTGRES_OPTIONS_HOST=string
+POSTGRES_OPTIONS_SSLKEY=string
+POSTGRES_OPTIONS_SSLMODE=string
+POSTGRES_OPTIONS_SSLCERT=string
+POSTGRES_OPTIONS_SSLROOTCERT=string
 ```

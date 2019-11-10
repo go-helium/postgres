@@ -1,9 +1,10 @@
 package postgres
 
 import (
+	"context"
 	"time"
 
-	"github.com/go-pg/pg"
+	"github.com/go-pg/pg/v9"
 	"github.com/im-kulikov/helium/module"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
@@ -25,8 +26,8 @@ type (
 	// Hook is a simple implementation of pg.QueryHook
 	Hook struct {
 		StartAt time.Time
-		Before  func(*pg.QueryEvent)
-		After   func(*pg.QueryEvent)
+		Before  func(context.Context, *pg.QueryEvent) (context.Context, error)
+		After   func(context.Context, *pg.QueryEvent) error
 	}
 
 	// Error is constant error
@@ -60,23 +61,23 @@ func (e Error) Error() string {
 }
 
 // BeforeQuery callback
-func (h *Hook) BeforeQuery(e *pg.QueryEvent) {
+func (h *Hook) BeforeQuery(ctx context.Context, e *pg.QueryEvent) (context.Context, error) {
 	h.StartAt = time.Now()
 
 	if h.Before == nil {
-		return
+		return ctx, e.Err
 	}
 
-	h.Before(e)
+	return h.Before(ctx, e)
 }
 
 // AfterQuery callback
-func (h Hook) AfterQuery(e *pg.QueryEvent) {
+func (h Hook) AfterQuery(ctx context.Context, e *pg.QueryEvent) error {
 	if h.After == nil {
-		return
+		return e.Err
 	}
 
-	h.After(e)
+	return h.After(ctx, e)
 }
 
 // NewDefaultConfig returns connection config
@@ -146,15 +147,16 @@ func NewConnection(cfg *Config, l *zap.Logger) (db *pg.DB, err error) {
 
 	if cfg.Debug {
 		h := new(Hook)
-		h.After = func(e *pg.QueryEvent) {
+		h.After = func(ctx context.Context, e *pg.QueryEvent) error {
 			query, qErr := e.FormattedQuery()
 			l.Debug("pg query",
 				zap.String("query", query),
 				zap.Duration("query_time", time.Since(h.StartAt)),
-				zap.Int("attempt", e.Attempt),
 				zap.Any("params", e.Params),
 				zap.NamedError("format_error", qErr),
-				zap.Error(e.Error))
+				zap.Error(e.Err))
+
+			return e.Err
 		}
 		db.AddQueryHook(h)
 	}
