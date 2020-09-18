@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/go-pg/pg/v9"
+	"github.com/go-pg/pg/v10"
 	"github.com/im-kulikov/helium/module"
 	"github.com/pkg/errors"
 	"github.com/spf13/viper"
@@ -152,7 +152,7 @@ func NewConnection(cfg *Config, l *zap.Logger) (db *pg.DB, err error) {
 		h.After = func(ctx context.Context, e *pg.QueryEvent) error {
 			query, qErr := e.FormattedQuery()
 			l.Debug("pg query",
-				zap.String("query", query),
+				zap.String("query", string(query)),
 				zap.Duration("query_time", time.Since(h.StartAt)),
 				zap.Any("params", e.Params),
 				zap.NamedError("format_error", qErr),
