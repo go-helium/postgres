@@ -128,13 +128,15 @@ func NewConnection(cfg *Config, l *zap.Logger) (db *pg.DB, err error) {
 		PoolSize: cfg.PoolSize,
 	}
 
-	l.Debug("Connect to PostgreSQL",
-		zap.String("hostname", cfg.Hostname),
-		zap.String("username", cfg.Username),
-		zap.String("password", cfg.Password),
-		zap.String("database", cfg.Database),
-		zap.Int("pool_size", cfg.PoolSize),
-		zap.Any("options", cfg.Options))
+	if cfg.Debug {
+		l.Debug("Connect to PostgreSQL",
+			zap.String("hostname", cfg.Hostname),
+			zap.String("username", cfg.Username),
+			zap.String("password", cfg.Password),
+			zap.String("database", cfg.Database),
+			zap.Int("pool_size", cfg.PoolSize),
+			zap.Any("options", cfg.Options))
+	}
 
 	if opts.TLSConfig, err = ssl(cfg.Options); err != nil {
 		return nil, err
